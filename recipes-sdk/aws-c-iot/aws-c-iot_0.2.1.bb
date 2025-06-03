@@ -15,7 +15,6 @@ DEPENDS += "\
     aws-c-mqtt \
     aws-c-s3 \
     aws-checksums \
-    aws-crt-cpp \
     s2n \
     openssl \
     "
@@ -31,7 +30,7 @@ SRC_URI = "\
 
 SRCREV = "9f0c152ed76af1a45d99fb98286707aa23c728af"
 
-S = "${WORKDIR}/git"
+S = "${UNPACKDIR}/git"
 
 inherit cmake ptest pkgconfig
 

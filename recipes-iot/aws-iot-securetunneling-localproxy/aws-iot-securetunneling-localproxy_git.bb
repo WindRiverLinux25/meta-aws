@@ -25,11 +25,11 @@ SRC_URI = "\
     file://0004-cmake-version.patch \
     file://run-ptest \
     "
-SRCREV = "ae6a6754517aaf6e82580d832de158db5581ad62"
+SRCREV = "feb59e268c8f4f1c7450f3a510963e84cc397ac7"
 
 UPSTREAM_CHECK_COMMITS = "1"
 
-S = "${WORKDIR}/git"
+S = "${UNPACKDIR}/git"
 
 inherit cmake ptest pkgconfig
 
@@ -60,3 +60,7 @@ do_install_ptest() {
 
 # fix DSO missing from command line
 LDFLAGS += "-Wl,--copy-dt-needed-entries"
+
+# Use -std=c++20 for fixing
+# error: #warning "<ciso646> is deprecated in C++17, use <version> to detect implementation-specific macros" [-Werror=cpp]
+CXXFLAGS += "-std=c++20 -Wno-error=attributes -Wno-error=deprecated"
