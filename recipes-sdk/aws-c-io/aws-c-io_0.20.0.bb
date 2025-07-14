@@ -1,25 +1,28 @@
-SUMMARY = "AWS C S3"
-DESCRIPTION = "C99 library implementation for communicating with the S3 service, designed for maximizing throughput on high bandwidth EC2 instances."
+SUMMARY = "AWS C IO"
+DESCRIPTION = "aws-c-io is an event driven framework for implementing application protocols. It is built on top of cross-platform abstractions that allow you as a developer to think only about the state machine and API for your protocols."
 
-HOMEPAGE = "https://github.com/awslabs/aws-c-s3"
+HOMEPAGE = "https://github.com/awslabs/aws-c-io"
+
+CVE_PRODUCT = "amazon_web_services_aws-c-io"
+
 LICENSE = "Apache-2.0"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=34400b68072d710fecd0a2940a0d1658"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 DEPENDS = "\
-    aws-c-auth \
-    aws-c-http \
-    aws-checksums \
+    aws-c-cal \
+    aws-c-common \
+    s2n \
     ${@bb.utils.contains('PACKAGECONFIG', 'static', 'aws-lc', 'openssl', d)} \
     "
 
-PROVIDES += "aws/crt-c-s3"
+PROVIDES += "aws/crt-c-io"
 
 BRANCH ?= "main"
 SRC_URI = "\
-    git://github.com/awslabs/aws-c-s3.git;protocol=https;branch=${BRANCH} \
+    git://github.com/awslabs/aws-c-io.git;protocol=https;branch=${BRANCH} \
     file://run-ptest \
     "
-SRCREV = "52c90d39dab19a36e06d746a8c795060632619e2"
+SRCREV = "3b500b3746281ab19ef9336d93b153ad1d895214"
 
 S = "${UNPACKDIR}/git"
 
@@ -35,19 +38,18 @@ PACKAGECONFIG[static] = "-DBUILD_SHARED_LIBS=OFF,-DBUILD_SHARED_LIBS=ON"
 # CMAKE_CROSSCOMPILING=ON will disable building the tests
 PACKAGECONFIG[with-tests] = "-DBUILD_TESTING=ON -DCMAKE_CROSSCOMPILING=OFF,-DBUILD_TESTING=OFF,"
 
-CFLAGS:append = " -Wl,-Bsymbolic"
-
 FILES:${PN}-dev += "${libdir}/*/cmake"
 
+AWS_C_INSTALL = "$D/usr"
+CFLAGS:append = " -Wl,-Bsymbolic"
 EXTRA_OECMAKE += "\
     -DCMAKE_MODULE_PATH=${STAGING_LIBDIR}/cmake \
     -DCMAKE_PREFIX_PATH="${STAGING_LIBDIR}/cmake;${STAGING_LIBDIR}" \
 "
-
 do_install_ptest () {
    install -d ${D}${PTEST_PATH}/tests
    cp -r ${B}/tests/* ${D}${PTEST_PATH}/tests/
-   install -m 0755 ${B}/tests/aws-c-s3-tests ${D}${PTEST_PATH}/tests/
+   install -m 0755 ${B}/tests/aws-c-io-tests ${D}${PTEST_PATH}/tests/
 }
 
 # nooelint: oelint.vars.insaneskip:INSANE_SKIP
