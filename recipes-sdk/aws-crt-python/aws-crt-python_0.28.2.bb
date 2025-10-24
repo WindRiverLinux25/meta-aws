@@ -36,7 +36,7 @@ SRC_URI = "\
     file://run-ptest \
     "
 
-SRCREV = "e6a48db2b9c16288af5ae0b8bd5269eb9d3c3c02"
+SRCREV = "657a47a8db4d9479c15b5d0a8ccc4ff84d375f42"
 UPSTREAM_CHECK_GITTAGREGEX = "v(?P<pver>.*)"
 
 S = "${UNPACKDIR}/git"
@@ -44,6 +44,10 @@ S = "${UNPACKDIR}/git"
 inherit setuptools3_legacy ptest
 
 CFLAGS:append = " -Wl,-Bsymbolic"
+
+# https://github.com/aws4embeddedlinux/meta-aws/issues/13929
+# nooelint: oelint.vars.specific
+LDFLAGS:append:arm = " ${@bb.utils.contains('PACKAGECONFIG', 'no-buildin-sdk', '', ' -latomic', d)}"
 
 # use the libcrypto included on your system
 export AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO = "1"
